@@ -4,23 +4,17 @@ export default defineContentScript({
     matches: ['*://*/*'], // Run on all sites
     async main() {
         const currentHost = window.location.hostname;
-        console.log(`Checking blackout settings for ${currentHost}`);
 
         // Check if the current site should be blacked out
         const shouldBlackout = await shouldBlackoutHost(currentHost);
         const settings = await getSettings();
 
-        console.log('Should blackout:', shouldBlackout, 'Settings:', settings);
-
         if (shouldBlackout) {
-            console.log(`Applying blackout to ${currentHost}`);
             applyBlackout();
         }
 
         // Listen for storage changes to update the blackout in real-time
         subscribeToChanges((newSettings) => {
-            console.log('Blackout settings changed:', newSettings);
-
             // Check if the current site should be blacked out with the new settings
             const shouldBlackoutNow =
                 newSettings.enabled && newSettings.sites.some((site) => currentHost.includes(site));

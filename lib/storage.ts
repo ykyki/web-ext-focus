@@ -55,7 +55,6 @@ export async function initializeStorage(): Promise<void> {
         const result = await browser.storage.local.get(STORAGE_KEY);
         if (!result[STORAGE_KEY]) {
             await saveSettings(DEFAULT_SETTINGS);
-            console.log('Initialized default blackout settings');
         }
     } catch (error) {
         console.error('Error initializing storage:', error);

@@ -1,19 +1,16 @@
+import { getSettings, shouldBlackoutHost, subscribeToChanges } from '../lib/storage';
+
 export default defineContentScript({
     matches: ['*://*/*'], // Run on all sites
     async main() {
         const currentHost = window.location.hostname;
         console.log(`Checking blackout settings for ${currentHost}`);
 
-        // Get the current blackout settings from storage
-        const result = await browser.storage.local.get('blackout');
-        const blackoutSettings = result.blackout || { enabled: false, sites: [] };
-
         // Check if the current site should be blacked out
-        const shouldBlackout =
-            blackoutSettings.enabled &&
-            blackoutSettings.sites.some((site: string) => currentHost.includes(site));
+        const shouldBlackout = await shouldBlackoutHost(currentHost);
+        const settings = await getSettings();
 
-        console.log('Should blackout:', shouldBlackout, 'Settings:', blackoutSettings);
+        console.log('Should blackout:', shouldBlackout, 'Settings:', settings);
 
         if (shouldBlackout) {
             console.log(`Applying blackout to ${currentHost}`);
@@ -21,26 +18,22 @@ export default defineContentScript({
         }
 
         // Listen for storage changes to update the blackout in real-time
-        browser.storage.onChanged.addListener((changes, area) => {
-            if (area === 'local' && 'blackout' in changes) {
-                const newSettings = changes.blackout.newValue;
-                console.log('Blackout settings changed:', newSettings);
+        subscribeToChanges((newSettings) => {
+            console.log('Blackout settings changed:', newSettings);
 
-                // Check if the current site should be blacked out with the new settings
-                const shouldBlackoutNow =
-                    newSettings.enabled &&
-                    newSettings.sites.some((site: string) => currentHost.includes(site));
+            // Check if the current site should be blacked out with the new settings
+            const shouldBlackoutNow =
+                newSettings.enabled && newSettings.sites.some((site) => currentHost.includes(site));
 
-                // Get the existing overlay
-                const existingOverlay = document.querySelector('div[style*="z-index: 9999"]');
+            // Get the existing overlay
+            const existingOverlay = document.querySelector('div[style*="z-index: 9999"]');
 
-                if (shouldBlackoutNow && !existingOverlay) {
-                    // Create and add overlay if this site should be blacked out and not already present
-                    applyBlackout();
-                } else if (!shouldBlackoutNow && existingOverlay) {
-                    // Remove overlay if this site should not be blacked out and overlay is present
-                    existingOverlay.remove();
-                }
+            if (shouldBlackoutNow && !existingOverlay) {
+                // Create and add overlay if this site should be blacked out and not already present
+                applyBlackout();
+            } else if (!shouldBlackoutNow && existingOverlay) {
+                // Remove overlay if this site should not be blacked out and overlay is present
+                existingOverlay.remove();
             }
         });
     },

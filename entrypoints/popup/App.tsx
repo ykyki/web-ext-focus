@@ -1,10 +1,6 @@
 import { For, createResource, createSignal, onMount } from 'solid-js';
+import { type BlackoutSettings, getSettings, saveSettings } from '../../lib/storage';
 import './App.css';
-
-interface BlackoutSettings {
-    enabled: boolean;
-    sites: string[];
-}
 
 function App() {
     const [blackoutSettings, setBlackoutSettings] = createSignal<BlackoutSettings>({
@@ -34,10 +30,8 @@ function App() {
         setCurrentSite(domain);
 
         // Get the current settings from storage
-        const result = await browser.storage.local.get('blackout');
-        if (result.blackout) {
-            setBlackoutSettings(result.blackout);
-        }
+        const settings = await getSettings();
+        setBlackoutSettings(settings);
     });
 
     const toggleBlackout = async () => {
@@ -50,7 +44,7 @@ function App() {
         setBlackoutSettings(newSettings);
 
         // Save to storage
-        await browser.storage.local.set({ blackout: newSettings });
+        await saveSettings(newSettings);
     };
 
     const addSite = async () => {
@@ -73,7 +67,7 @@ function App() {
         setNewSite(''); // Clear the input
 
         // Save to storage
-        await browser.storage.local.set({ blackout: newSettings });
+        await saveSettings(newSettings);
     };
 
     const removeSite = async (siteToRemove: string) => {
@@ -86,7 +80,7 @@ function App() {
         setBlackoutSettings(newSettings);
 
         // Save to storage
-        await browser.storage.local.set({ blackout: newSettings });
+        await saveSettings(newSettings);
     };
 
     return (

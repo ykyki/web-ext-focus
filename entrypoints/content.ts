@@ -50,9 +50,36 @@ function applyBlackout() {
     overlay.style.left = '0';
     overlay.style.width = '100%';
     overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'black';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.95)'; // 95% opacity black
     overlay.style.zIndex = '9999'; // High z-index to ensure it's on top
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.opacity = '0'; // Start with 0 opacity for fade-in
+    overlay.style.transition = 'opacity 0.6s ease'; // Smooth fade-in transition
+
+    // Create the FOCUS text element - using span instead of div to avoid box-like appearance
+    const focusText = document.createElement('span');
+    focusText.textContent = 'FOCUS';
+    focusText.style.color = 'white';
+    focusText.style.fontSize = '3rem';
+    focusText.style.fontWeight = '300'; // Lighter font weight for elegance
+    focusText.style.letterSpacing = '0.5rem'; // Spread out the letters
+    focusText.style.textTransform = 'uppercase';
+    focusText.style.fontFamily = 'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif';
+    focusText.style.background = 'transparent'; // Ensure no background
+    focusText.style.border = 'none'; // Ensure no border
+    focusText.style.padding = '0'; // Remove any padding
+    focusText.style.margin = '0'; // Remove any margin
+
+    // Add the text to the overlay
+    overlay.appendChild(focusText);
 
     // Add to the page
     document.body.appendChild(overlay);
+
+    // Trigger the fade-in animation after a small delay
+    setTimeout(() => {
+        overlay.style.opacity = '1';
+    }, 10);
 }

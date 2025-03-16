@@ -1,6 +1,13 @@
 {
     "extends": "./.wxt/tsconfig.json",
     "compilerOptions": {
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "jsx": "preserve",
         "jsxImportSource": "solid-js"
     }

@@ -1,6 +1,4 @@
-import solidLogo from '@/assets/solid.svg';
 import { createSignal, onMount } from 'solid-js';
-import wxtLogo from '/wxt.svg';
 import './App.css';
 
 function App() {
@@ -22,25 +20,9 @@ function App() {
 
     return (
         <>
-            <div>
-                <a href="https://wxt.dev" target="_blank" rel="noreferrer">
-                    <img src={wxtLogo} class="logo" alt="WXT logo" />
-                </a>
-                <a href="https://solidjs.com" target="_blank" rel="noreferrer">
-                    <img src={solidLogo} class="logo solid" alt="Solid logo" />
-                </a>
-            </div>
             <h1>Focus Mode</h1>
             <div class="card">
-                <div
-                    style={{
-                        display: 'flex',
-                        'align-items': 'center',
-                        'justify-content': 'center',
-                        gap: '10px',
-                        margin: '20px 0',
-                    }}
-                >
+                <div class="toggle-container">
                     <span>Blackout example.com:</span>
                     <label class="switch">
                         <input

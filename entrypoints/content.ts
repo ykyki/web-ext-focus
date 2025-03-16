@@ -6,7 +6,7 @@ export default defineContentScript({
 
         // Get the current blackout settings from storage
         const result = await browser.storage.local.get('blackout');
-        const blackoutSettings = result.blackout || { enabled: true, sites: ['example.com'] };
+        const blackoutSettings = result.blackout || { enabled: false, sites: [] };
 
         // Check if the current site should be blacked out
         const shouldBlackout =

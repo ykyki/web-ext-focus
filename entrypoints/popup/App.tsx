@@ -1,4 +1,4 @@
-import { For, createSignal, onMount } from 'solid-js';
+import { For, createResource, createSignal, onMount } from 'solid-js';
 import './App.css';
 
 interface BlackoutSettings {
@@ -12,8 +12,27 @@ function App() {
         sites: ['example.com'],
     });
     const [newSite, setNewSite] = createSignal('');
+    const [currentSite, setCurrentSite] = createSignal('');
+
+    // Function to get the current tab's domain
+    const getCurrentTabDomain = async () => {
+        try {
+            const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+            if (tabs[0]?.url) {
+                const url = new URL(tabs[0].url);
+                return url.hostname;
+            }
+        } catch (error) {
+            console.error('Error getting current tab:', error);
+        }
+        return '';
+    };
 
     onMount(async () => {
+        // Get the current domain
+        const domain = await getCurrentTabDomain();
+        setCurrentSite(domain);
+
         // Get the current settings from storage
         const result = await browser.storage.local.get('blackout');
         if (result.blackout) {
@@ -70,15 +89,9 @@ function App() {
         await browser.storage.local.set({ blackout: newSettings });
     };
 
-    const handleKeyPress = (e: KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            addSite();
-        }
-    };
-
     return (
         <>
-            <h1>Focus Mode</h1>
+            <h1>Focus</h1>
             <div class="card">
                 <div class="toggle-container">
                     <span>Enable Blackout:</span>
@@ -92,17 +105,19 @@ function App() {
                     </label>
                 </div>
 
-                <div class="site-input-container">
-                    <input
-                        type="text"
-                        value={newSite()}
-                        onInput={(e) => setNewSite(e.currentTarget.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Enter domain (e.g., example.com)"
-                    />
-                    <button type="button" onClick={addSite}>
-                        Add Site
-                    </button>
+                <div class="current-site-container">
+                    {currentSite() && (
+                        <button
+                            type="button"
+                            class="add-current-site-btn"
+                            onClick={() => {
+                                setNewSite(currentSite());
+                                addSite();
+                            }}
+                        >
+                            Add Current Site ({currentSite()})
+                        </button>
+                    )}
                 </div>
 
                 <div class="sites-list">
@@ -124,8 +139,6 @@ function App() {
                         </For>
                     </ul>
                 </div>
-
-                <p>Toggle the switch to enable or disable the blackout on all sites in the list.</p>
             </div>
         </>
     );

@@ -5,6 +5,6 @@ export default defineConfig({
     extensionApi: 'chrome',
     modules: ['@wxt-dev/module-solid'],
     manifest: {
-        permissions: ['storage'],
+        permissions: ['storage', 'tabs'],
     },
 });

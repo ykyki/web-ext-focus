@@ -9,12 +9,18 @@ export const STORAGE_KEY = 'blackout';
 export interface BlackoutSettings {
     enabled: boolean;
     sites: string[];
+    timerActive: boolean;
+    timerEndTime: number | null; // Timestamp when timer ends
+    timerDuration: number | null; // Duration in minutes
 }
 
 // Default settings
 export const DEFAULT_SETTINGS: BlackoutSettings = {
-    enabled: true,
+    enabled: false, // Disabled by default, only enabled during timer sessions
     sites: ['example.com'],
+    timerActive: false,
+    timerEndTime: null,
+    timerDuration: null,
 };
 
 /**

@@ -1,14 +1,19 @@
-import { For, createResource, createSignal, onMount } from 'solid-js';
+import { For, Show, createResource, createSignal, onCleanup, onMount } from 'solid-js';
 import { type BlackoutSettings, getSettings, saveSettings } from '../../lib/storage';
 import './App.css';
 
 function App() {
     const [blackoutSettings, setBlackoutSettings] = createSignal<BlackoutSettings>({
-        enabled: true,
+        enabled: false, // Disabled by default, only enabled during timer sessions
         sites: ['example.com'],
+        timerActive: false,
+        timerEndTime: null,
+        timerDuration: null,
     });
     const [newSite, setNewSite] = createSignal('');
     const [currentSite, setCurrentSite] = createSignal('');
+    const [timeRemaining, setTimeRemaining] = createSignal<string>('');
+    const [intervalId, setIntervalId] = createSignal<number | null>(null);
 
     // Function to get the current tab's domain
     const getCurrentTabDomain = async () => {
@@ -24,6 +29,80 @@ function App() {
         return '';
     };
 
+    // Function to format time remaining in MM:SS format
+    const formatTimeRemaining = (milliseconds: number): string => {
+        if (milliseconds <= 0) return '00:00';
+
+        const totalSeconds = Math.floor(milliseconds / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    };
+
+    // Function to update the countdown display
+    const updateCountdown = () => {
+        const settings = blackoutSettings();
+        if (!settings.timerActive || !settings.timerEndTime) return;
+
+        const now = Date.now();
+        const timeLeft = settings.timerEndTime - now;
+
+        if (timeLeft <= 0) {
+            // Timer has ended
+            const currentIntervalId = intervalId();
+            if (currentIntervalId !== null) {
+                clearInterval(currentIntervalId);
+            }
+            setIntervalId(null);
+
+            // Reset timer state and disable blackout
+            const newSettings = {
+                ...settings,
+                enabled: false, // Disable blackout when timer ends
+                timerActive: false,
+                timerEndTime: null,
+                timerDuration: null,
+            };
+            setBlackoutSettings(newSettings);
+            saveSettings(newSettings);
+            return;
+        }
+
+        setTimeRemaining(formatTimeRemaining(timeLeft));
+    };
+
+    // Function to start the timer
+    const startTimer = async (durationMinutes: number) => {
+        // Clear any existing interval
+        const currentIntervalId = intervalId();
+        if (currentIntervalId !== null) {
+            clearInterval(currentIntervalId);
+        }
+
+        const now = Date.now();
+        const endTime = now + durationMinutes * 60 * 1000;
+
+        const currentSettings = blackoutSettings();
+        const newSettings = {
+            ...currentSettings,
+            enabled: true, // Ensure blackout is enabled when timer starts
+            timerActive: true,
+            timerEndTime: endTime,
+            timerDuration: durationMinutes,
+        };
+
+        setBlackoutSettings(newSettings);
+        await saveSettings(newSettings);
+
+        // Set initial time remaining
+        setTimeRemaining(formatTimeRemaining(durationMinutes * 60 * 1000));
+
+        // Start the countdown interval
+        const id = window.setInterval(updateCountdown, 1000);
+        setIntervalId(id);
+    };
+
     onMount(async () => {
         // Get the current domain
         const domain = await getCurrentTabDomain();
@@ -32,6 +111,38 @@ function App() {
         // Get the current settings from storage
         const settings = await getSettings();
         setBlackoutSettings(settings);
+
+        // Check if there's an active timer
+        if (settings.timerActive && settings.timerEndTime) {
+            const now = Date.now();
+            const timeLeft = settings.timerEndTime - now;
+
+            if (timeLeft > 0) {
+                // Timer is still active
+                setTimeRemaining(formatTimeRemaining(timeLeft));
+                const id = window.setInterval(updateCountdown, 1000);
+                setIntervalId(id);
+            } else {
+                // Timer has expired, disable blackout
+                const newSettings = {
+                    ...settings,
+                    enabled: false, // Disable blackout when timer has expired
+                    timerActive: false,
+                    timerEndTime: null,
+                    timerDuration: null,
+                };
+                setBlackoutSettings(newSettings);
+                saveSettings(newSettings);
+            }
+        }
+    });
+
+    // Clean up interval on component unmount
+    onCleanup(() => {
+        const currentIntervalId = intervalId();
+        if (currentIntervalId !== null) {
+            clearInterval(currentIntervalId);
+        }
     });
 
     const toggleBlackout = async () => {
@@ -87,52 +198,68 @@ function App() {
         <>
             <h1>Focus</h1>
             <div class="card">
-                <div class="toggle-container">
-                    <span>Enable Blackout:</span>
-                    <label class="switch">
-                        <input
-                            type="checkbox"
-                            checked={blackoutSettings().enabled}
-                            onChange={toggleBlackout}
-                        />
-                        <span class="slider round" />
-                    </label>
-                </div>
+                <Show
+                    when={!blackoutSettings().timerActive}
+                    fallback={
+                        <div class="timer-display">
+                            <div class="countdown">{timeRemaining()}</div>
+                            <div class="timer-label">Time Remaining</div>
+                        </div>
+                    }
+                >
+                    <div class="timer-options">
+                        <h3>Timer:</h3>
+                        <div class="timer-buttons">
+                            <button type="button" class="timer-btn" onClick={() => startTimer(30)}>
+                                30min
+                            </button>
+                            <button type="button" class="timer-btn" onClick={() => startTimer(60)}>
+                                60min
+                            </button>
+                            <button type="button" class="timer-btn" onClick={() => startTimer(90)}>
+                                90min
+                            </button>
+                            <button type="button" class="timer-btn" onClick={() => startTimer(120)}>
+                                120min
+                            </button>
+                        </div>
+                    </div>
 
-                <div class="current-site-container">
-                    {currentSite() && (
-                        <button
-                            type="button"
-                            class="add-current-site-btn"
-                            onClick={() => {
-                                setNewSite(currentSite());
-                                addSite();
-                            }}
-                        >
-                            Add Current Site ({currentSite()})
-                        </button>
-                    )}
-                </div>
+                    <div class="current-site-container">
+                        {currentSite() && (
+                            <button
+                                type="button"
+                                class="add-current-site-btn"
+                                onClick={() => {
+                                    setNewSite(currentSite());
+                                    addSite();
+                                }}
+                            >
+                                Add Current Site ({currentSite()})
+                            </button>
+                        )}
+                    </div>
 
-                <div class="sites-list">
-                    <h3>Blackout Sites:</h3>
-                    <ul>
-                        <For each={blackoutSettings().sites}>
-                            {(site) => (
-                                <li>
-                                    {site}
-                                    <button
-                                        type="button"
-                                        class="remove-btn"
-                                        onClick={() => removeSite(site)}
-                                    >
-                                        ✕
-                                    </button>
-                                </li>
-                            )}
-                        </For>
-                    </ul>
-                </div>
+                    <div class="sites-list">
+                        <h3>Blackout Sites:</h3>
+                        <ul>
+                            <For each={blackoutSettings().sites}>
+                                {(site) => (
+                                    <li>
+                                        {site}
+                                        <button
+                                            type="button"
+                                            class="remove-btn"
+                                            onClick={() => removeSite(site)}
+                                        >
+                                            ✕
+                                        </button>
+                                    </li>
+                                )}
+                            </For>
+                        </ul>
+                    </div>
+                </Show>
             </div>
         </>
     );

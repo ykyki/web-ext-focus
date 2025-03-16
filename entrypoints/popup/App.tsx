@@ -1,10 +1,24 @@
 import solidLogo from '@/assets/solid.svg';
-import { createSignal } from 'solid-js';
+import { createSignal, onMount } from 'solid-js';
 import wxtLogo from '/wxt.svg';
 import './App.css';
 
 function App() {
-    const [count, setCount] = createSignal(0);
+    const [isBlackoutEnabled, setIsBlackoutEnabled] = createSignal(true);
+
+    onMount(async () => {
+        // Get the current state from storage
+        const result = await browser.storage.local.get('blackoutEnabled');
+        setIsBlackoutEnabled(result.blackoutEnabled !== false); // Default to true if not set
+    });
+
+    const toggleBlackout = async () => {
+        const newState = !isBlackoutEnabled();
+        setIsBlackoutEnabled(newState);
+
+        // Save to storage
+        await browser.storage.local.set({ blackoutEnabled: newState });
+    };
 
     return (
         <>
@@ -16,16 +30,29 @@ function App() {
                     <img src={solidLogo} class="logo solid" alt="Solid logo" />
                 </a>
             </div>
-            <h1>WXT + Solid</h1>
+            <h1>Focus Mode</h1>
             <div class="card">
-                <button type="button" onClick={() => setCount((count) => count + 1)}>
-                    count is {count()}
-                </button>
-                <p>
-                    Edit <code>popup/App.tsx</code> and save to test HMR
-                </p>
+                <div
+                    style={{
+                        display: 'flex',
+                        'align-items': 'center',
+                        'justify-content': 'center',
+                        gap: '10px',
+                        margin: '20px 0',
+                    }}
+                >
+                    <span>Blackout example.com:</span>
+                    <label class="switch">
+                        <input
+                            type="checkbox"
+                            checked={isBlackoutEnabled()}
+                            onChange={toggleBlackout}
+                        />
+                        <span class="slider round" />
+                    </label>
+                </div>
+                <p>Toggle the switch to enable or disable the blackout on example.com</p>
             </div>
-            <p class="read-the-docs">Click on the WXT and Solid logos to learn more</p>
         </>
     );
 }

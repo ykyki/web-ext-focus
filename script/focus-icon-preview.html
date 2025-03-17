@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Icon Preview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2196f3;
+            text-align: center;
+        }
+        .icon-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .icon-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .icon-wrapper p {
+            margin: 10px 0 0 0;
+            font-weight: bold;
+        }
+        .icon-preview {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px dashed #ccc;
+            background-color: white;
+        }
+        .icon-preview.size-16 {
+            width: 48px;
+            height: 48px;
+        }
+        .icon-preview.size-32 {
+            width: 64px;
+            height: 64px;
+        }
+        .icon-preview.size-48 {
+            width: 96px;
+            height: 96px;
+        }
+        .icon-preview.size-96 {
+            width: 144px;
+            height: 144px;
+        }
+        .icon-preview.size-128 {
+            width: 192px;
+            height: 192px;
+        }
+        .instructions {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .instructions h2 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        .instructions ol {
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        .dark-mode-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .dark-mode-toggle button {
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .dark-mode-toggle button:hover {
+            background-color: #0b7dda;
+        }
+        body.dark-mode {
+            background-color: #333;
+            color: #f5f5f5;
+        }
+        body.dark-mode .icon-wrapper {
+            background-color: #444;
+        }
+        body.dark-mode .icon-preview {
+            background-color: #222;
+            border-color: #555;
+        }
+        body.dark-mode .instructions {
+            background-color: #1e3a5f;
+        }
+        body.dark-mode .instructions h2 {
+            color: #90caf9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Focus Extension Icon Preview</h1>
+    
+    <div class="dark-mode-toggle">
+        <button onclick="toggleDarkMode()">Toggle Dark/Light Mode</button>
+    </div>
+
+    <div class="icon-container">
+        <div class="icon-wrapper">
+            <div class="icon-preview size-128">
+                <svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Shield with gradient -->
+                    <defs>
+                        <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#2196f3" />
+                            <stop offset="100%" stop-color="#0b7dda" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Shield shape -->
+                    <path d="M64 8 C30 8 14 20 14 20 C14 20 14 58 14 78 C14 98 64 120 64 120 C64 120 114 98 114 78 C114 58 114 20 114 20 C114 20 98 8 64 8 Z" 
+                          fill="url(#shieldGradient)" stroke="#1565c0" stroke-width="2" />
+                    
+                    <!-- Clock face -->
+                    <circle cx="64" cy="64" r="40" fill="#f9f9f9" stroke="#1565c0" stroke-width="2" />
+                    
+                    <!-- Clock ticks -->
+                    <line x1="64" y1="30" x2="64" y2="36" stroke="#0d47a1" stroke-width="2" />
+                    <line x1="64" y1="92" x2="64" y2="98" stroke="#0d47a1" stroke-width="2" />
+                    <line x1="30" y1="64" x2="36" y2="64" stroke="#0d47a1" stroke-width="2" />
+                    <line x1="92" y1="64" x2="98" y2="64" stroke="#0d47a1" stroke-width="2" />
+                    
+                    <!-- Clock hands - positioned at 25 minutes (focus time) -->
+                    <!-- Hour hand (shorter) -->
+                    <line x1="64" y1="64" x2="64" y2="44" stroke="#0d47a1" stroke-width="4" stroke-linecap="round" />
+                    
+                    <!-- Minute hand (longer) - pointing to 5 (25 minutes) -->
+                    <line x1="64" y1="64" x2="84" y2="78" stroke="#0d47a1" stroke-width="3" stroke-linecap="round" />
+                    
+                    <!-- Center dot -->
+                    <circle cx="64" cy="64" r="3" fill="#0d47a1" />
+                </svg>
+            </div>
+            <p>128×128</p>
+        </div>
+
+        <div class="icon-wrapper">
+            <div class="icon-preview size-96">
+                <svg width="96" height="96" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Shield with gradient -->
+                    <defs>
+                        <linearGradient id="shieldGradient96" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#2196f3" />
+                            <stop offset="100%" stop-color="#0b7dda" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Shield shape -->
+                    <path d="M64 8 C30 8 14 20 14 20 C14 20 14 58 14 78 C14 98 64 120 64 120 C64 120 114 98 114 78 C114 58 114 20 114 20 C114 20 98 8 64 8 Z" 
+                          fill="url(#shieldGradient96)" stroke="#1565c0" stroke-width="2" />
+                    
+                    <!-- Clock face -->
+                    <circle cx="64" cy="64" r="40" fill="#f9f9f9" stroke="#1565c0" stroke-width="2" />
+                    
+                    <!-- Clock ticks -->
+                    <line x1="64" y1="30" x2="64" y2="36" stroke="#0d47a1" stroke-width="2" />
+                    <line x1="64" y1="92" x2="64" y2="98" stroke="#0d47a1" stroke-width="2" />
+                    <line x1="30" y1="64" x2="36" y2="64" stroke="#0d47a1" stroke-width="2" />
+                    <line x1="92" y1="64" x2="98" y2="64" stroke="#0d47a1" stroke-width="2" />
+                    
+                    <!-- Clock hands - positioned at 25 minutes (focus time) -->
+                    <!-- Hour hand (shorter) -->
+                    <line x1="64" y1="64" x2="64" y2="44" stroke="#0d47a1" stroke-width="4" stroke-linecap="round" />
+                    
+                    <!-- Minute hand (longer) - pointing to 5 (25 minutes) -->
+                    <line x1="64" y1="64" x2="84" y2="78" stroke="#0d47a1" stroke-width="3" stroke-linecap="round" />
+                    
+                    <!-- Center dot -->
+                    <circle cx="64" cy="64" r="3" fill="#0d47a1" />
+                </svg>
+            </div>
+            <p>96×96</p>
+        </div>
+
+        <div class="icon-wrapper">
+            <div class="icon-preview size-48">
+                <svg width="48" height="48" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Shield with gradient -->
+                    <defs>
+                        <linearGradient id="shieldGradient48" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#2196f3" />
+                            <stop offset="100%" stop-color="#0b7dda" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Shield shape -->
+                    <path d="M64 8 C30 8 14 20 14 20 C14 20 14 58 14 78 C14 98 64 120 64 120 C64 120 114 98 114 78 C114 58 114 20 114 20 C114 20 98 8 64 8 Z" 
+                          fill="url(#shieldGradient48)" stroke="#1565c0" stroke-width="2" />
+                    
+                    <!-- Clock face -->
+                    <circle cx="64" cy="64" r="40" fill="#f9f9f9" stroke="#1565c0" stroke-width="2" />
+                    
+                    <!-- Clock ticks - simplified for smaller size -->
+                    <line x1="64" y1="30" x2="64" y2="36" stroke="#0d47a1" stroke-width="2" />
+                    <line x1="64" y1="92" x2="64" y2="98" stroke="#0d47a1" stroke-width="2" />
+                    <line x1="30" y1="64" x2="36" y2="64" stroke="#0d47a1" stroke-width="2" />
+                    <line x1="92" y1="64" x2="98" y2="64" stroke="#0d47a1" stroke-width="2" />
+                    
+                    <!-- Clock hands - positioned at 25 minutes (focus time) -->
+                    <!-- Hour hand (shorter) -->
+                    <line x1="64" y1="64" x2="64" y2="44" stroke="#0d47a1" stroke-width="4" stroke-linecap="round" />
+                    
+                    <!-- Minute hand (longer) - pointing to 5 (25 minutes) -->
+                    <line x1="64" y1="64" x2="84" y2="78" stroke="#0d47a1" stroke-width="3" stroke-linecap="round" />
+                    
+                    <!-- Center dot -->
+                    <circle cx="64" cy="64" r="3" fill="#0d47a1" />
+                </svg>
+            </div>
+            <p>48×48</p>
+        </div>
+
+        <div class="icon-wrapper">
+            <div class="icon-preview size-32">
+                <svg width="32" height="32" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Shield with gradient -->
+                    <defs>
+                        <linearGradient id="shieldGradient32" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#2196f3" />
+                            <stop offset="100%" stop-color="#0b7dda" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Shield shape -->
+                    <path d="M64 8 C30 8 14 20 14 20 C14 20 14 58 14 78 C14 98 64 120 64 120 C64 120 114 98 114 78 C114 58 114 20 114 20 C114 20 98 8 64 8 Z" 
+                          fill="url(#shieldGradient32)" stroke="#1565c0" stroke-width="2" />
+                    
+                    <!-- Clock face - simplified for smaller size -->
+                    <circle cx="64" cy="64" r="40" fill="#f9f9f9" stroke="#1565c0" stroke-width="2" />
+                    
+                    <!-- Clock hands - positioned at 25 minutes (focus time) -->
+                    <!-- Hour hand (shorter) -->
+                    <line x1="64" y1="64" x2="64" y2="44" stroke="#0d47a1" stroke-width="4" stroke-linecap="round" />
+                    
+                    <!-- Minute hand (longer) - pointing to 5 (25 minutes) -->
+                    <line x1="64" y1="64" x2="84" y2="78" stroke="#0d47a1" stroke-width="3" stroke-linecap="round" />
+                    
+                    <!-- Center dot -->
+                    <circle cx="64" cy="64" r="3" fill="#0d47a1" />
+                </svg>
+            </div>
+            <p>32×32</p>
+        </div>
+
+        <div class="icon-wrapper">
+            <div class="icon-preview size-16">
+                <svg width="16" height="16" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Shield with gradient - very simplified for 16px -->
+                    <defs>
+                        <linearGradient id="shieldGradient16" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#2196f3" />
+                            <stop offset="100%" stop-color="#0b7dda" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Shield shape -->
+                    <path d="M64 8 C30 8 14 20 14 20 C14 20 14 58 14 78 C14 98 64 120 64 120 C64 120 114 98 114 78 C114 58 114 20 114 20 C114 20 98 8 64 8 Z" 
+                          fill="url(#shieldGradient16)" stroke="#1565c0" stroke-width="2" />
+                    
+                    <!-- Clock face - very simplified -->
+                    <circle cx="64" cy="64" r="40" fill="#f9f9f9" stroke="#1565c0" stroke-width="2" />
+                    
+                    <!-- Clock hands - minimal for 16px -->
+                    <!-- Hour hand -->
+                    <line x1="64" y1="64" x2="64" y2="44" stroke="#0d47a1" stroke-width="4" stroke-linecap="round" />
+                    
+                    <!-- Minute hand -->
+                    <line x1="64" y1="64" x2="84" y2="78" stroke="#0d47a1" stroke-width="3" stroke-linecap="round" />
+                </svg>
+            </div>
+            <p>16×16</p>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h2>Instructions for Saving Icons</h2>
+        <ol>
+            <li>Right-click on each icon and select "Save Image As..." to save it to your computer.</li>
+            <li>Save each icon with the appropriate filename (16.png, 32.png, 48.png, 96.png, 128.png).</li>
+            <li>Place the saved PNG files in your extension's "public/icon/" directory.</li>
+            <li>Toggle between light and dark mode to ensure the icons look good in both themes.</li>
+        </ol>
+    </div>
+
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>

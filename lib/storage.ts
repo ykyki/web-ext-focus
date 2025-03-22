@@ -9,14 +9,12 @@ export const STORAGE_KEY = 'blackout';
 export interface BlackoutSettings {
     sites: string[];
     timerEndTime: number | null; // Timestamp when timer ends
-    timerDuration: number | null; // Duration in minutes
 }
 
 // Default settings
 export const DEFAULT_SETTINGS: BlackoutSettings = {
     sites: ['example.com'],
     timerEndTime: null,
-    timerDuration: null,
 };
 
 export const shouldBlackout = (

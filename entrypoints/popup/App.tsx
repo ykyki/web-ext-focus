@@ -6,7 +6,6 @@ function App() {
     const [blackoutSettings, setBlackoutSettings] = createSignal<BlackoutSettings>({
         sites: ['example.com'],
         timerEndTime: null,
-        timerDuration: null,
     });
     const [newSite, setNewSite] = createSignal('');
     const [currentSite, setCurrentSite] = createSignal('');

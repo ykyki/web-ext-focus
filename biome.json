@@ -7,7 +7,7 @@
     },
     "files": {
         "ignoreUnknown": false,
-        "ignore": []
+        "ignore": ["script/convert-svg-to-png.js"]
     },
     "formatter": {
         "enabled": true,

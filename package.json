@@ -34,8 +34,6 @@
         "wxt": "^0.19.29"
     },
     "pnpm": {
-        "onlyBuiltDependencies": [
-            "canvas"
-        ]
+        "onlyBuiltDependencies": ["canvas"]
     }
 }

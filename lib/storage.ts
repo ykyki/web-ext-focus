@@ -3,7 +3,7 @@
  */
 
 // Define the storage key as a constant to avoid duplication
-export const STORAGE_KEY = 'blackout';
+export const STORAGE_KEY = 'wxt-ext-focus';
 
 // Define the storage structure
 export interface BlackoutSettings {

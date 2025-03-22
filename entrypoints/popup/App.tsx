@@ -1,11 +1,10 @@
 import { For, Show, createSignal, onCleanup, onMount } from 'solid-js';
-import { type BlackoutSettings, getSettings, saveSettings } from '../../lib/storage';
+import { type BlackoutSettings, getSettings, saveSettings, timerActive } from '../../lib/storage';
 import './App.css';
 
 function App() {
     const [blackoutSettings, setBlackoutSettings] = createSignal<BlackoutSettings>({
         sites: ['example.com'],
-        timerActive: false,
         timerEndTime: null,
         timerDuration: null,
     });
@@ -13,6 +12,7 @@ function App() {
     const [currentSite, setCurrentSite] = createSignal('');
     const [timeRemaining, setTimeRemaining] = createSignal<string>('');
     const [intervalId, setIntervalId] = createSignal<number | null>(null);
+    const [now, setNow] = createSignal(Date.now());
 
     // Function to get the current tab's domain
     const getCurrentTabDomain = async () => {
@@ -42,10 +42,10 @@ function App() {
     // Function to update the countdown display
     const updateCountdown = () => {
         const settings = blackoutSettings();
-        if (!settings.timerActive || !settings.timerEndTime) return;
 
-        const now = Date.now();
-        const timeLeft = settings.timerEndTime - now;
+        if (!timerActive(settings, now())) return;
+
+        const timeLeft = settings.timerEndTime - now();
 
         if (timeLeft <= 0) {
             // Timer has ended
@@ -109,10 +109,12 @@ function App() {
         const settings = await getSettings();
         setBlackoutSettings(settings);
 
+        const nowInterval = setInterval(() => setNow(Date.now()), 1000);
+        onCleanup(() => clearInterval(nowInterval));
+
         // Check if there's an active timer
-        if (settings.timerActive && settings.timerEndTime) {
-            const now = Date.now();
-            const timeLeft = settings.timerEndTime - now;
+        if (timerActive(settings, now())) {
+            const timeLeft = settings.timerEndTime - now();
 
             if (timeLeft > 0) {
                 // Timer is still active
@@ -182,7 +184,7 @@ function App() {
             <h1>Focus</h1>
             <div class="card">
                 <Show
-                    when={!blackoutSettings().timerActive}
+                    when={!timerActive(blackoutSettings(), now())}
                     fallback={
                         <div class="timer-display">
                             <div class="countdown">{timeRemaining()}</div>

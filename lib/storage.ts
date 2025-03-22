@@ -8,7 +8,6 @@ export const STORAGE_KEY = 'blackout';
 // Define the storage structure
 export interface BlackoutSettings {
     sites: string[];
-    timerActive: boolean;
     timerEndTime: number | null; // Timestamp when timer ends
     timerDuration: number | null; // Duration in minutes
 }
@@ -16,17 +15,23 @@ export interface BlackoutSettings {
 // Default settings
 export const DEFAULT_SETTINGS: BlackoutSettings = {
     sites: ['example.com'],
-    timerActive: false,
     timerEndTime: null,
     timerDuration: null,
 };
 
-export const shouldBlackout = (setting: BlackoutSettings, now: number, host: string) => {
-    return (
-        setting.timerEndTime !== null &&
-        setting.timerEndTime > now &&
-        setting.sites.some((site) => host.includes(site))
-    );
+export const shouldBlackout = (
+    setting: BlackoutSettings,
+    now: number,
+    host: string,
+): setting is BlackoutSettings & { timerEndTime: number } => {
+    return timerActive(setting, now) && setting.sites.some((site) => host.includes(site));
+};
+
+export const timerActive = (
+    setting: BlackoutSettings,
+    now: number,
+): setting is BlackoutSettings & { timerEndTime: number } => {
+    return setting.timerEndTime !== null && setting.timerEndTime > now;
 };
 
 /**

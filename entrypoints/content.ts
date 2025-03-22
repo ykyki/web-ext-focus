@@ -1,4 +1,4 @@
-import { getSettings, shouldBlackoutHost, subscribeToChanges } from '../lib/storage';
+import { shouldBlackoutHost } from '../lib/storage';
 
 export default defineContentScript({
     matches: ['*://*/*'], // Run on all sites
@@ -7,17 +7,13 @@ export default defineContentScript({
 
         // Check if the current site should be blacked out
         const shouldBlackout = await shouldBlackoutHost(currentHost);
-        const settings = await getSettings();
 
         if (shouldBlackout) {
             applyBlackout();
         }
 
-        // Listen for storage changes to update the blackout in real-time
-        subscribeToChanges((newSettings) => {
-            // Check if the current site should be blacked out with the new settings
-            const shouldBlackoutNow =
-                newSettings.enabled && newSettings.sites.some((site) => currentHost.includes(site));
+        subscribeInterval(async () => {
+            const shouldBlackoutNow = await shouldBlackoutHost(currentHost);
 
             // Get the existing overlay
             const existingOverlay = document.querySelector('div[style*="z-index: 9999"]');
@@ -32,6 +28,13 @@ export default defineContentScript({
         });
     },
 });
+
+const INTERVAL_MILLISECONDS = 1000;
+function subscribeInterval(callback: () => Promise<void>): () => void {
+    const intervalId = setInterval(callback, INTERVAL_MILLISECONDS);
+
+    return () => clearInterval(intervalId);
+}
 
 // Helper function to create and apply the blackout overlay
 function applyBlackout() {

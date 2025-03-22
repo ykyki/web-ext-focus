@@ -7,7 +7,6 @@ export const STORAGE_KEY = 'blackout';
 
 // Define the storage structure
 export interface BlackoutSettings {
-    enabled: boolean;
     sites: string[];
     timerActive: boolean;
     timerEndTime: number | null; // Timestamp when timer ends
@@ -16,11 +15,18 @@ export interface BlackoutSettings {
 
 // Default settings
 export const DEFAULT_SETTINGS: BlackoutSettings = {
-    enabled: false, // Disabled by default, only enabled during timer sessions
     sites: ['example.com'],
     timerActive: false,
     timerEndTime: null,
     timerDuration: null,
+};
+
+export const shouldBlackout = (setting: BlackoutSettings, now: number, host: string) => {
+    return (
+        setting.timerEndTime !== null &&
+        setting.timerEndTime > now &&
+        setting.sites.some((site) => host.includes(site))
+    );
 };
 
 /**
@@ -74,32 +80,7 @@ export async function initializeStorage(): Promise<void> {
  */
 export async function shouldBlackoutHost(host: string): Promise<boolean> {
     const settings = await getSettings();
-    return settings.enabled && settings.sites.some((site) => host.includes(site));
-}
+    const now = Date.now();
 
-/**
- * Subscribe to storage changes
- * @param callback Function to call when storage changes
- * @returns Function to unsubscribe
- */
-export function subscribeToChanges(callback: (settings: BlackoutSettings) => void): () => void {
-    // Define a type for the storage changes
-    type StorageChange = {
-        oldValue?: BlackoutSettings | undefined;
-        newValue?: BlackoutSettings | undefined;
-    };
-
-    const listener = (changes: { [key: string]: StorageChange }, area: string) => {
-        if (area === 'local' && STORAGE_KEY in changes) {
-            const newSettings = changes[STORAGE_KEY].newValue as BlackoutSettings;
-            callback(newSettings);
-        }
-    };
-
-    browser.storage.onChanged.addListener(listener);
-
-    // Return unsubscribe function
-    return () => {
-        browser.storage.onChanged.removeListener(listener);
-    };
+    return shouldBlackout(settings, now, host);
 }

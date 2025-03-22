@@ -4,7 +4,6 @@ import './App.css';
 
 function App() {
     const [blackoutSettings, setBlackoutSettings] = createSignal<BlackoutSettings>({
-        enabled: false, // Disabled by default, only enabled during timer sessions
         sites: ['example.com'],
         timerActive: false,
         timerEndTime: null,
@@ -59,7 +58,6 @@ function App() {
             // Reset timer state and disable blackout
             const newSettings = {
                 ...settings,
-                enabled: false, // Disable blackout when timer ends
                 timerActive: false,
                 timerEndTime: null,
                 timerDuration: null,
@@ -86,7 +84,6 @@ function App() {
         const currentSettings = blackoutSettings();
         const newSettings = {
             ...currentSettings,
-            enabled: true, // Ensure blackout is enabled when timer starts
             timerActive: true,
             timerEndTime: endTime,
             timerDuration: durationMinutes,
@@ -126,7 +123,6 @@ function App() {
                 // Timer has expired, disable blackout
                 const newSettings = {
                     ...settings,
-                    enabled: false, // Disable blackout when timer has expired
                     timerActive: false,
                     timerEndTime: null,
                     timerDuration: null,
@@ -197,6 +193,9 @@ function App() {
                     <div class="timer-options">
                         <h3>Timer:</h3>
                         <div class="timer-buttons">
+                            <button type="button" class="timer-btn" onClick={() => startTimer(0.1)}>
+                                0min
+                            </button>
                             <button type="button" class="timer-btn" onClick={() => startTimer(15)}>
                                 15min
                             </button>

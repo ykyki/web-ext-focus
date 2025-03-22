@@ -1,12 +1,16 @@
 import { For, Show, createSignal, onCleanup, onMount } from 'solid-js';
-import { type BlackoutSettings, getSettings, saveSettings, timerActive } from '../../lib/storage';
+import {
+    type BlackoutSettings,
+    DEFAULT_SETTINGS,
+    getSettings,
+    saveSettings,
+    timerActive,
+} from '../../lib/storage';
 import './App.css';
 
 function App() {
-    const [blackoutSettings, setBlackoutSettings] = createSignal<BlackoutSettings>({
-        sites: ['example.com'],
-        timerEndTime: null,
-    });
+    const [blackoutSettings, setBlackoutSettings] =
+        createSignal<BlackoutSettings>(DEFAULT_SETTINGS);
     const [newSite, setNewSite] = createSignal('');
     const [currentSite, setCurrentSite] = createSignal('');
     const [timeRemaining, setTimeRemaining] = createSignal<string>('');

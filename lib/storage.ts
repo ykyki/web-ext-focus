@@ -6,15 +6,26 @@
 export const STORAGE_KEY = 'wxt-ext-focus';
 
 // Define the storage structure
-export interface BlackoutSettings {
+interface BlackoutSettingsDto {
     sites: string[];
-    timerEndTime: number | null; // Timestamp when timer ends
+    timerEndTime: number | null;
 }
+
+// Public interface
+export interface BlackoutSettings extends BlackoutSettingsDto {
+    _marker: null; // just used to distinguish this type from the DTO.
+}
+
+const fromDto = (dto: BlackoutSettingsDto): BlackoutSettings => ({
+    ...dto,
+    _marker: null,
+});
 
 // Default settings
 export const DEFAULT_SETTINGS: BlackoutSettings = {
     sites: ['example.com'],
     timerEndTime: null,
+    _marker: null,
 };
 
 export const shouldBlackout = (
@@ -40,7 +51,8 @@ export async function getSettings(): Promise<BlackoutSettings> {
     try {
         const result = await browser.storage.local.get(STORAGE_KEY);
         // Type assertion to handle the result properly
-        return (result[STORAGE_KEY] as BlackoutSettings) || DEFAULT_SETTINGS;
+        const dto = result[STORAGE_KEY] as BlackoutSettingsDto;
+        return dto ? fromDto(dto) : DEFAULT_SETTINGS;
     } catch (error) {
         console.error('Error getting blackout settings:', error);
         return DEFAULT_SETTINGS;

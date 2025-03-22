@@ -16,6 +16,7 @@ function App() {
     const [timeRemaining, setTimeRemaining] = createSignal<string>('');
     const [intervalId, setIntervalId] = createSignal<number | null>(null);
     const [now, setNow] = createSignal(Date.now());
+    const [sliderDuration, setSliderDuration] = createSignal<number>(60);
 
     // Function to get the current tab's domain
     const getCurrentTabDomain = async () => {
@@ -196,24 +197,59 @@ function App() {
                     }
                 >
                     <div class="timer-options">
-                        <h3>Timer:</h3>
+                        <div class="slider-container">
+                            <input
+                                type="range"
+                                min="0"
+                                max="180"
+                                step="5"
+                                value={sliderDuration()}
+                                onInput={(e) => {
+                                    let n = Number.parseInt(e.currentTarget.value);
+                                    if (!n) n = 1;
+                                    setSliderDuration(n);
+                                }}
+                                class="duration-slider"
+                            />
+                            <div class="duration-display">{sliderDuration()} min</div>
+                        </div>
                         <div class="timer-buttons">
-                            <button type="button" class="timer-btn" onClick={() => startTimer(0.1)}>
-                                0min
-                            </button>
-                            <button type="button" class="timer-btn" onClick={() => startTimer(15)}>
+                            <button
+                                type="button"
+                                class="timer-btn"
+                                onClick={() => setSliderDuration(15)}
+                            >
                                 15min
                             </button>
-                            <button type="button" class="timer-btn" onClick={() => startTimer(60)}>
+                            <button
+                                type="button"
+                                class="timer-btn"
+                                onClick={() => setSliderDuration(60)}
+                            >
                                 60min
                             </button>
-                            <button type="button" class="timer-btn" onClick={() => startTimer(90)}>
+                            <button
+                                type="button"
+                                class="timer-btn"
+                                onClick={() => setSliderDuration(90)}
+                            >
                                 90min
                             </button>
-                            <button type="button" class="timer-btn" onClick={() => startTimer(180)}>
-                                180min
+                            <button
+                                type="button"
+                                class="timer-btn"
+                                onClick={() => setSliderDuration(120)}
+                            >
+                                120min
                             </button>
                         </div>
+                        <button
+                            type="button"
+                            class="start-timer-btn"
+                            onClick={() => startTimer(sliderDuration())}
+                        >
+                            Start
+                        </button>
                     </div>
 
                     <div class="current-site-container">

@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/common-setup
+      - uses: ./.github/actions/setup
       - run: pnpm install
       - run: pnpm typecheck
       - run: pnpm check
@@ -29,5 +29,5 @@ jobs:
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/common-setup
+      - uses: ./.github/actions/setup
       - run: pnpm zip

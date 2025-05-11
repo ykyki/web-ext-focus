@@ -195,9 +195,9 @@ input:checked + .slider:before {
     width: 100%;
     padding: 12px; /* Slightly increased padding */
     margin: 10px 0;
-    background: linear-gradient(to bottom, #FFD700, #FFC800); /* Gold gradient */
+    background: linear-gradient(to bottom, #ffd700, #ffc800); /* Gold gradient */
     color: white;
-    border: 2px solid #E6C200; /* Darker gold border */
+    border: 2px solid #e6c200; /* Darker gold border */
     border-radius: 6px; /* Slightly more rounded */
     cursor: pointer;
     font-weight: 700; /* Bolder text */
@@ -219,7 +219,7 @@ input:checked + .slider:before {
 
 /* Hover effects */
 .start-timer-btn:hover {
-    background: linear-gradient(to bottom, #FFE066, #FFD700);
+    background: linear-gradient(to bottom, #ffe066, #ffd700);
 }
 
 .timer-buttons {

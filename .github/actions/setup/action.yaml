@@ -1,0 +1,25 @@
+name: setup
+description: |
+  action for common setup
+
+inputs:
+  NODE_VERSION:
+    description: ""
+    required: false
+    default: "23"
+  PNPM_VERSION:
+    description: ""
+    required: false
+    default: "10"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: pnpm/action-setup@v4
+      with:
+        version: ${{ inputs.PNPM_VERSION }}
+        run_install: false
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.NODE_VERSION }}
+        cache: "pnpm"

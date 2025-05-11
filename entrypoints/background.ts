@@ -9,7 +9,7 @@ export default defineBackground(() => {
         const settings = await getSettings();
 
         // If there's an active timer, check if it has expired
-        if (settings.timerActive && settings.timerEndTime) {
+        if (settings.timerEndTime !== null) {
             const now = Date.now();
             const timeLeft = settings.timerEndTime - now;
 
@@ -17,10 +17,7 @@ export default defineBackground(() => {
             if (timeLeft <= 0) {
                 const newSettings = {
                     ...settings,
-                    enabled: false, // Disable blackout when timer has expired
-                    timerActive: false,
                     timerEndTime: null,
-                    timerDuration: null,
                 };
                 await saveSettings(newSettings);
             }

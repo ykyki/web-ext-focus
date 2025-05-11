@@ -192,7 +192,6 @@ function App() {
                     fallback={
                         <div class="timer-display">
                             <div class="countdown">{timeRemaining()}</div>
-                            <div class="timer-label">Time Remaining</div>
                         </div>
                     }
                 >

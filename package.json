@@ -25,14 +25,14 @@
         "format:write": "biome format --write"
     },
     "dependencies": {
-        "solid-js": "^1.9.6"
+        "solid-js": "^1.9.7"
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
-        "@types/chrome": "^0.0.321",
+        "@types/chrome": "^0.0.327",
         "@wxt-dev/module-solid": "^1.1.3",
         "typescript": "^5.8.3",
-        "wxt": "^0.20.6"
+        "wxt": "^0.20.7"
     },
     "pnpm": {
         "onlyBuiltDependencies": ["canvas"]
